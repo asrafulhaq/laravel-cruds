@@ -11,9 +11,9 @@
 <div class="card">
     <div class="card-body">
        <div class="profile">
-            <img class="shadow-sm" src="https://i0.wp.com/chelle.studio/wp-content/uploads/2019/08/team-member-02.jpg?w=640&ssl=1" alt="">
-            <h2>Asraful Haque</h2>
-            <p>Laravel Developer</p>
+            <img class="shadow-sm" src="{{ url('photos/' . $student -> photo) }}" alt="">
+            <h2>{{ $student -> name }}</h2>
+            <p>{{ $student -> email }}</p>
        </div>
     </div>
 </div>

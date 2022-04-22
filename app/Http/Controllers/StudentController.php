@@ -13,7 +13,11 @@ class StudentController extends Controller
      */
     public function index()
     {
-        return view('student.index');
+
+        $data = Student::all();
+        return view('student.index', [
+            'all_data'      => $data
+        ]);
     }
 
 
@@ -22,7 +26,10 @@ class StudentController extends Controller
      */
     public function show($id)
     {
-        return view('student.single');
+        $data = Student::find($id);
+        return view('student.single', [
+            'student'   => $data
+        ]);
     }
 
     /**
@@ -49,7 +56,21 @@ class StudentController extends Controller
     public function store(Request $request)
     {
 
+        //validation 
+        $this -> validate($request, [
+            'name'      => 'required',
+            'email'      => 'required|email|unique:students',
+            'cell'      => 'required|starts_with:01,8801,+8801|unique:students',
+        ],[
+            'name.required'     => 'নামের ঘরটি পূরণ করুন',
+            'email.required'     => 'ইমেইলের ঘরটি পূরন করুন',
+            'cell.required'     => 'পাসওয়ার্ডের ঘরটি পূরন করুন',
+            'email.email'     => 'ইমেলটি সঠিক নয়',
+            'email.unique'     => 'ইমেইলটি নিয়ে নেয়া হয়েছে',
+        ]);
 
+
+        // Image uplaod
         if( $request -> hasfile('photo') ){
             $img = $request -> file('photo');
             $file_name = md5(time().rand()) . '.' . $img -> clientExtension();
@@ -59,7 +80,7 @@ class StudentController extends Controller
             $file_name = NULL;
         }
 
-
+        // Data store to table 
         Student::create([
             'name'      => $request -> name,
             'email'      => $request -> email,
@@ -67,7 +88,18 @@ class StudentController extends Controller
             'photo'      =>  $file_name,
         ]);
 
-        return back();
+        // return back 
+        return back() -> with('success', 'Student created successful');
+    }
+
+    /**
+     * Destroy 
+     */
+    public function destroy($id)
+    {
+        $data = Student::find($id);
+        $data -> delete();
+        return back() -> with('success', 'Data Deleted');
     }
 
 }
